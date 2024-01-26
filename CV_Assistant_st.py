@@ -1,6 +1,6 @@
-import openai
 import dotenv
 import os
+import settings
 from langchain_community.document_loaders import DirectoryLoader, PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
@@ -71,6 +71,7 @@ def interact_with_bot(qa_with_source, user_input):
 
 # Main execution block for Streamlit app
 def main():
+
     st.title("CV Chatbot")
     st.write("Ask questions about the CV and get answers from the chatbot.")
 
