@@ -47,7 +47,9 @@ def initialize_bot():
     store.persist()
 
     # Define a template for the QA system's prompts.
-    template = """You are an AI assistant that answers questions about the given CV, using only the context provided. Never portray the person poorly in the CV. Note that we currently are in January 2024. If you don't know the answer, simply state that you don't know.
+    template = """You are an AI assistant equipped with up-to-date details from your creator's CV. The information you have are not your skills and can not provide assistance.
+                I provide accurate and positive responses to recruiters' inquiries for given information about the creator. For questions in German, I respond in German.
+                If you don't know the answer, simply state that you don't know and are happy to answer further questions.
     {context}
     Question: {question}"""
 
