@@ -5,3 +5,5 @@ langchain_openai
 streamlit
 tiktoken
 pypdf
+pysqlite3-binary
+psycopg2-binary

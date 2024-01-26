@@ -1,6 +1,6 @@
 import openai
+import dotenv
 import os
-import constants
 from langchain_community.document_loaders import DirectoryLoader, PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
@@ -9,10 +9,10 @@ from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 import tiktoken
 import streamlit as st
-import chromadb
 
 # Initialization function: sets up the bot by loading documents, creating embeddings, and configuring the QA system.
 def initialize_bot():
+    dotenv.load_dotenv(".env", override=True)
     # Load PDF documents from the specified directory.
     loader = DirectoryLoader('./pdf/', glob="**/*.pdf", loader_cls=PyPDFLoader)
     doc = loader.load()
@@ -36,7 +36,7 @@ def initialize_bot():
     data = text_splitter.split_documents(doc)
 
     # Create embeddings for the document chunks.
-    embeddings = OpenAIEmbeddings(openai_api_key=constants.APIKEY)
+    embeddings = OpenAIEmbeddings(openai_api_key=os.environ["OPENAI_API_KEY"])
 
     # Create a Chroma store from the document chunks and embeddings.
     store = Chroma.from_documents(
@@ -54,7 +54,7 @@ def initialize_bot():
     PROMPT = PromptTemplate(template=template, input_variables=["context", "question"])
 
     # Initialize the ChatGPT language model.
-    llm = ChatOpenAI(temperature=0, model=gpt_model, openai_api_key=constants.APIKEY)
+    llm = ChatOpenAI(temperature=0, model=gpt_model, openai_api_key=os.environ["OPENAI_API_KEY"])
 
     # Set up the QA system with the language model and the Chroma store as the retriever.
     qa_with_source = RetrievalQA.from_chain_type(
