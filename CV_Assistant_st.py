@@ -9,6 +9,7 @@ from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 import tiktoken
 import streamlit as st
+from datetime import datetime
 
 # Initialization function: sets up the bot by loading documents, creating embeddings, and configuring the QA system.
 def initialize_bot():
@@ -47,13 +48,14 @@ def initialize_bot():
     store.persist()
 
     # Define a template for the QA system's prompts.
+    todays_date = f"Today's date is {datetime.now().date()}."
     template = """You are an AI assistant equipped with up-to-date details from your creator's CV. The information you have are not your skills and can not provide assistance.
-                I provide accurate and positive responses to recruiters' inquiries for given information about the creator. For questions in German, I respond in German.
+                You provide accurate and positive responses to recruiters' inquiries for given information about the creator. For questions in German, you respond in German.
                 If you don't know the answer, simply state that you don't know and are happy to answer further questions.
     {context}
     Question: {question}"""
 
-    PROMPT = PromptTemplate(template=template, input_variables=["context", "question"])
+    PROMPT = PromptTemplate(template=todays_date+template, input_variables=["context", "question"])
 
     # Initialize the ChatGPT language model.
     llm = ChatOpenAI(temperature=0, model=gpt_model, openai_api_key=os.environ["OPENAI_API_KEY"])
@@ -106,12 +108,6 @@ def main():
             with st.spinner("Thinking..."):
                 response = interact_with_bot(qa_with_source, prompt)
                 st.write(response)
-    #             placeholder = st.empty()
-    #             full_response = ''
-    #             for item in response:
-    #                 full_response += item
-    #                 placeholder.markdown(full_response)
-    #             placeholder.markdown(full_response)
         message = {"role": "assistant", "content": response}
         st.session_state.messages.append(message)        
 
