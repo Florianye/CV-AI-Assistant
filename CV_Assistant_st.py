@@ -80,10 +80,24 @@ def main():
     qa_with_source = initialize_bot()
 
     user_input = st.text_input("Ask a question about the CV:", "")
+    with st.chat_message("user"):
+        st.write(user_input)
 
-    if user_input:
-        response = interact_with_bot(qa_with_source, user_input)
-        st.text_area("Response:", response, height=200)
+
+
+
+    # if user_input:
+    #     response = interact_with_bot(qa_with_source, user_input)
+    #     st.text_area("Response:", response, height=200)
+
+
+
+
+    # prompt = st.chat_input("Say something")
+    # if prompt:
+    #     st.write(f"User has sent the following prompt: {prompt}")
+
+        
 
 if __name__ == "__main__":
     main()
