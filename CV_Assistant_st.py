@@ -1,7 +1,7 @@
 import dotenv
 import os
 import settings
-from langchain_community.document_loaders import DirectoryLoader, PyPDFLoader
+from langchain_community.document_loaders import DirectoryLoader, TextLoader #,PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.vectorstores import Chroma
@@ -15,7 +15,7 @@ from datetime import datetime
 def initialize_bot():
     dotenv.load_dotenv(".env", override=True)
     # Load PDF documents from the specified directory.
-    loader = DirectoryLoader('./pdf/', glob="**/*.pdf", loader_cls=PyPDFLoader)
+    loader = DirectoryLoader('./txt/', glob="**/*.txt", loader_cls=TextLoader)
     doc = loader.load()
 
     # Select the GPT model and initialize the tokenizer for that model.
@@ -43,7 +43,7 @@ def initialize_bot():
     store = Chroma.from_documents(
         data, embeddings, 
         ids=[f"{item.metadata['source']}-{index}" for index, item in enumerate(data)],
-        collection_name="CV-Embeddings", persist_directory='db'
+        collection_name="resume-embeddings", persist_directory='db'
     )
     store.persist()
 
