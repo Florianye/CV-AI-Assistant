@@ -1,5 +1,5 @@
 pdf/
-txt/
+
 __pycache__/
-db/
+
 .env
