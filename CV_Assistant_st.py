@@ -14,7 +14,7 @@ from datetime import datetime
 # Initialization function: sets up the bot by loading documents, creating embeddings, and configuring the QA system.
 def initialize_bot():
     # dotenv.load_dotenv(".env", override=True)
-    os.environ["OPENAI_API_KEY"] == st.secrets["OPENAI_API_KEY"]
+    os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
     # Load PDF documents from the specified directory.
     loader = DirectoryLoader('./txt/', glob="**/*.txt", loader_cls=TextLoader)
     doc = loader.load()
