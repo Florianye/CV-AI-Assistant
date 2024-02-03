@@ -30,7 +30,7 @@ def initialize_bot():
 
     # Split the loaded documents into smaller chunks.
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=250, chunk_overlap=10, length_function=tiktoken_len,
+        chunk_size=300, chunk_overlap=20, length_function=tiktoken_len,
         separators=["\n\n", "\n", " ", ""]
     )
 
@@ -49,9 +49,9 @@ def initialize_bot():
 
     # Define a template for the QA system's prompts.
     todays_date = f"Today's date is {datetime.now().date()}."
-    template = """You are an AI assistant equipped with up-to-date details from your creator's CV. The information you have are not your skills and can not provide assistance.
-                You provide accurate and positive responses to recruiters' inquiries for given information about the creator. For questions in German, you respond in German.
-                If you don't know the answer, simply state that you don't know and are happy to answer further questions.
+    template = """You are an highly intelligent AI assistant equipped with up-to-date details from your creator's CV. The information you have are not your skills and can not provide assistance.
+                You provide accurate and positive responses to recruiters' inquiries for given information about the creator. When you refer to the creater, always refer him as "he" or his name.
+                For questions in German, you respond in German. If you don't know the answer, simply state that you don't know and are happy to answer further questions.
     {context}
     Question: {question}"""
 
