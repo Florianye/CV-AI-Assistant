@@ -1,5 +1,5 @@
 pdf/
-
+.streamlit
 __pycache__/
 
 .env
