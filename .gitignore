@@ -1,5 +1,4 @@
 pdf/
 .streamlit
-__pycache__/
-
+CV_Assistant_st.py
 .env

@@ -12,10 +12,9 @@ import streamlit as st
 from datetime import datetime
 
 # Initialization function: sets up the bot by loading documents, creating embeddings, and configuring the QA system.
-@st.cache_data()
-def initialize_bot():
+#@st.cache_data()
+def initialize_bot(OPENAI_API_KEY):
     # dotenv.load_dotenv(".env", override=True)
-    os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
     # Load PDF documents from the specified directory.
     loader = DirectoryLoader('./txt/', glob="**/*.txt", loader_cls=TextLoader)
     doc = loader.load()
@@ -39,7 +38,7 @@ def initialize_bot():
     data = text_splitter.split_documents(doc)
 
     # Create embeddings for the document chunks.
-    embeddings = OpenAIEmbeddings(openai_api_key=os.environ["OPENAI_API_KEY"])
+    embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
 
     # Create a Chroma store from the document chunks and embeddings.
     store = Chroma.from_documents(
@@ -60,7 +59,7 @@ def initialize_bot():
     PROMPT = PromptTemplate(template=todays_date+template, input_variables=["context", "question"])
 
     # Initialize the ChatGPT language model.
-    llm = ChatOpenAI(temperature=0, model=gpt_model, openai_api_key=os.environ["OPENAI_API_KEY"])
+    llm = ChatOpenAI(temperature=0, model=gpt_model, openai_api_key=OPENAI_API_KEY) #os.environ["OPENAI_API_KEY"]
 
     # Set up the QA system with the language model and the Chroma store as the retriever.
     qa_with_source = RetrievalQA.from_chain_type(
@@ -71,48 +70,6 @@ def initialize_bot():
     return qa_with_source
 
 # Function to interact with the bot: takes user input and generates responses.
-@st.cache_data()
 def interact_with_bot(qa_with_source, user_input):
     response = qa_with_source.invoke(user_input)
     return response["result"]
-
-# Main execution block for Streamlit app
-def main():
-    st.title("CV Chatbot")
-    st.write("Ask questions about the CV and get answers from the chatbot.")
-
-    qa_with_source = initialize_bot()
-
-    # Store LLM generated responses
-    if "messages" not in st.session_state.keys():
-        st.session_state.messages = [{"role": "assistant", "content": "How may I assist you today?"}]
-
-    # Display or clear chat messages
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.write(message["content"])
-
-    def clear_chat_history():
-        st.session_state.messages = [{"role": "assistant", "content": "How may I assist you today?"}]
-    st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
-
-    # User-provided prompt
-    prompt = st.chat_input()
-    if prompt:
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.write(prompt)
-
-    #st.write(st.session_state.messages)
-
-    # Generate a new response if last message is not from assistant
-    if st.session_state.messages[-1]["role"] != "assistant":
-        with st.chat_message("assistant"):
-            with st.spinner("Thinking..."):
-                response = interact_with_bot(qa_with_source, prompt)
-                st.write(response)
-        message = {"role": "assistant", "content": response}
-        st.session_state.messages.append(message)        
-
-if __name__ == "__main__":
-    main()
