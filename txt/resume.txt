@@ -2,7 +2,7 @@ First name: Florian
 Surname: Ye
 Email: florian-ye@hotmail.com
 LinkedIn: https://www.linkedin.com/in/florianye
-Birthdate: 02.11.1999
+Birthdate: 02 November 1999
 
 *** Education ***
 - Between September 2010 and June 2014, I was in secondary school and successfully graduated from the GRG21 school at Franklinstraße 21, 1210 Vienna.
