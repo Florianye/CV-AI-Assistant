@@ -1,8 +1,6 @@
 # Main execution block for Streamlit app
 import streamlit as st
 from ai_assistant import initialize_bot, interact_with_bot
-import dotenv
-import os
 
 st.title("CV Chatbot")
 st.write("Ask questions about the CV and get answers from the chatbot.")
@@ -13,8 +11,7 @@ st.write("Ask questions about the CV and get answers from the chatbot.")
 #     qa_with_source = initialize_bot(os.environ["OPENAI_API_KEY"])#OPENAI_API_KEY=st.secrets["OPENAI_API_KEY"])
 #     return qa_with_source
 
-dotenv.load_dotenv(".env", override=True)
-qa_with_source = initialize_bot(os.environ["OPENAI_API_KEY"])
+qa_with_source, store = initialize_bot()
 
 # Store LLM generated responses
 if "messages" not in st.session_state.keys():

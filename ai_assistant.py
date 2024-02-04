@@ -13,8 +13,8 @@ from datetime import datetime
 
 # Initialization function: sets up the bot by loading documents, creating embeddings, and configuring the QA system.
 #@st.cache_data()
-def initialize_bot(OPENAI_API_KEY):
-    # dotenv.load_dotenv(".env", override=True)
+def initialize_bot():
+    dotenv.load_dotenv(".env", override=True)
     # Load PDF documents from the specified directory.
     loader = DirectoryLoader('./txt/', glob="**/*.txt", loader_cls=TextLoader)
     doc = loader.load()
@@ -38,13 +38,13 @@ def initialize_bot(OPENAI_API_KEY):
     data = text_splitter.split_documents(doc)
 
     # Create embeddings for the document chunks.
-    embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
+    embeddings = OpenAIEmbeddings(openai_api_key=os.environ["OPENAI_API_KEY"])
 
     # Create a Chroma store from the document chunks and embeddings.
     store = Chroma.from_documents(
         data, embeddings, 
         ids=[f"{item.metadata['source']}-{index}" for index, item in enumerate(data)],
-        collection_name="resume-embeddings", persist_directory='db'
+        collection_name="resume-embedding", persist_directory='db'
     )
     store.persist()
 
@@ -59,7 +59,7 @@ def initialize_bot(OPENAI_API_KEY):
     PROMPT = PromptTemplate(template=todays_date+template, input_variables=["context", "question"])
 
     # Initialize the ChatGPT language model.
-    llm = ChatOpenAI(temperature=0, model=gpt_model, openai_api_key=OPENAI_API_KEY) #os.environ["OPENAI_API_KEY"]
+    llm = ChatOpenAI(temperature=0, model=gpt_model, openai_api_key=os.environ["OPENAI_API_KEY"]) #os.environ["OPENAI_API_KEY"]
 
     # Set up the QA system with the language model and the Chroma store as the retriever.
     qa_with_source = RetrievalQA.from_chain_type(
@@ -67,7 +67,7 @@ def initialize_bot(OPENAI_API_KEY):
         chain_type_kwargs={"prompt": PROMPT}, return_source_documents=True
     )
 
-    return qa_with_source
+    return qa_with_source, store
 
 # Function to interact with the bot: takes user input and generates responses.
 def interact_with_bot(qa_with_source, user_input):

@@ -12,10 +12,8 @@ import streamlit as st
 from datetime import datetime
 
 # Initialization function: sets up the bot by loading documents, creating embeddings, and configuring the QA system.
-@st.cache_data()
 def initialize_bot():
-    # dotenv.load_dotenv(".env", override=True)
-    os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+    dotenv.load_dotenv(".env", override=True)
     # Load PDF documents from the specified directory.
     loader = DirectoryLoader('./txt/', glob="**/*.txt", loader_cls=TextLoader)
     doc = loader.load()
@@ -45,9 +43,10 @@ def initialize_bot():
     store = Chroma.from_documents(
         data, embeddings, 
         ids=[f"{item.metadata['source']}-{index}" for index, item in enumerate(data)],
-        collection_name="resume-embeddings", persist_directory='db'
+        collection_name="resume-embedding", persist_directory='db'
     )
     store.persist()
+    
 
     # Define a template for the QA system's prompts.
     todays_date = f"Today's date is {datetime.now().date()}."
@@ -71,7 +70,6 @@ def initialize_bot():
     return qa_with_source
 
 # Function to interact with the bot: takes user input and generates responses.
-@st.cache_data()
 def interact_with_bot(qa_with_source, user_input):
     response = qa_with_source.invoke(user_input)
     return response["result"]
