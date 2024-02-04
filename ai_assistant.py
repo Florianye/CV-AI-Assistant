@@ -81,7 +81,7 @@ def interact_with_bot(user_input):
     global qa_with_source
 
     if qa_with_source is None:
-        initialize_bot()
+        initialize_bot(st.secrets["OPENAI_API_KEY"])
         
     response = qa_with_source.invoke(user_input)
     return response["result"]
