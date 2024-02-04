@@ -5,13 +5,7 @@ from ai_assistant import initialize_bot, interact_with_bot
 st.title("CV Chatbot")
 st.write("Ask questions about the CV and get answers from the chatbot.")
 
-# #@st.cache_data()
-# def initialize_bot_st():
-#     dotenv.load_dotenv(".env", override=True)
-#     qa_with_source = initialize_bot(os.environ["OPENAI_API_KEY"])#OPENAI_API_KEY=st.secrets["OPENAI_API_KEY"])
-#     return qa_with_source
-
-qa_with_source, store = initialize_bot()
+#qa_with_source = initialize_bot()
 
 # Store LLM generated responses
 if "messages" not in st.session_state.keys():
@@ -39,7 +33,7 @@ if prompt:
 if st.session_state.messages[-1]["role"] != "assistant":
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
-            response = interact_with_bot(qa_with_source, prompt)
+            response = interact_with_bot(prompt)
             st.write(response)
     message = {"role": "assistant", "content": response}
     st.session_state.messages.append(message)
