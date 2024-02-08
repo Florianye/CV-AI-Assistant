@@ -35,7 +35,7 @@ if prompt:
         # Save date, questions and answers to defined empty list
         datetime_now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         chat_history_row.append(datetime_now)
-        chat_history_row.append(prompt)
+        chat_history_row.append(prompt.replace("'", ""))
 
 #st.write(st.session_state.messages)
 
@@ -45,21 +45,23 @@ if st.session_state.messages[-1]["role"] != "assistant":
         with st.spinner("Thinking..."):
             response = interact_with_bot(prompt)
             st.write(response)
-            chat_history_row.append(response)
+            chat_history_row.append(response.replace("'", ""))
     message = {"role": "assistant", "content": response}
     st.session_state.messages.append(message)
 
 # Save chat_history_row as row in azure database
-try:
-    if len(chat_history_row) > 2:
-        conn = conn_database(server_name=st.secrets["SERVER_NAME"], 
-                             database=st.secrets["DATABASE"], 
-                             db_username=st.secrets["DB_USERNAME"], 
-                             db_password=st.secrets["DB_PASSWORD"],
-                             streamlit=True)
-        cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO chat_history (datetime, question, answer) VALUES ('{chat_history_row[0]}', '{chat_history_row[1]}', '{chat_history_row[2]}');")
-        conn.commit()
+#try:
+if len(chat_history_row) > 2:
+    conn = conn_database(server_name=st.secrets["SERVER_NAME"], 
+                            database=st.secrets["DATABASE"], 
+                            db_username=st.secrets["DB_USERNAME"], 
+                            db_password=st.secrets["DB_PASSWORD"],
+                            streamlit=True)
+    cursor = conn.cursor()
+    #st.write(f"'{chat_history_row[0]}', '{chat_history_row[1]}', '{chat_history_row[2]}'")
+    cursor.execute(f"INSERT INTO chat_history (datetime, question, answer) VALUES ('{chat_history_row[0]}', '{chat_history_row[1]}', '{chat_history_row[2]}');")
+    
+    conn.commit()
         #conn.close()
-except:
-    pass
+#except:
+#    st.write("Error")
