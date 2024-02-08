@@ -1,10 +1,11 @@
 import pyodbc as odbc
 import os
 import dotenv
+import streamlit as st
 
-
-def conn_database(server_name, database, db_username, db_password, streamlit=None):
-    if streamlit == None:
+#@st.cache_resource(hash_funcs={odbc.connect: id})
+def conn_database(server_name, database, db_username, db_password, streamlit=False):
+    if streamlit == False:
         dotenv.load_dotenv(".env", override=True)
     else:
         os.environ["SERVER_NAME"] = server_name

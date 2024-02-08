@@ -1,7 +1,7 @@
 # Main execution block for Streamlit app
 import streamlit as st
 from ai_assistant import initialize_bot, interact_with_bot
-import csv
+from azure_database import conn_database
 from datetime import datetime
 
 st.title("Florian Ye's AI Assistant")
@@ -49,7 +49,13 @@ if st.session_state.messages[-1]["role"] != "assistant":
     message = {"role": "assistant", "content": response}
     st.session_state.messages.append(message)
 
-# Save chat_history_row as row in chat_history.csv
-with open('chat_history/chat_history.csv', 'a', newline='') as file:
-    csvwriter = csv.writer(file, delimiter=';', quotechar='"', quoting=csv.QUOTE_ALL) # Create a writer object
-    csvwriter.writerow(chat_history_row) # Write the new row
+# Save chat_history_row as row in azure database
+try:
+    if len(chat_history_row) > 2:
+        conn = conn_database(server_name=None, database=None, db_username=None, db_password=None)
+        cursor = conn.cursor()
+        cursor.execute(f"INSERT INTO chat_history (datetime, question, answer) VALUES ('{chat_history_row[0]}', '{chat_history_row[1]}', '{chat_history_row[2]}');")
+        conn.commit()
+        #conn.close()
+except:
+    pass
