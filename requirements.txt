@@ -9,3 +9,4 @@ pysqlite3-binary
 psycopg2-binary
 datetime
 pyodbc
+msodbcsql18
