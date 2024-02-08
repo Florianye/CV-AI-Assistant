@@ -52,7 +52,7 @@ if st.session_state.messages[-1]["role"] != "assistant":
 # Save chat_history_row as row in azure database
 try:
     if len(chat_history_row) > 2:
-        conn = conn_database(server_name=st.secrets["OPENAI_API_KEY"], 
+        conn = conn_database(server_name=st.secrets["SERVER_NAME"], 
                              database=st.secrets["DATABASE"], 
                              db_username=st.secrets["DB_USERNAME"], 
                              db_password=st.secrets["DB_PASSWORD"],
