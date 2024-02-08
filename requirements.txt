@@ -8,6 +8,4 @@ pypdf
 pysqlite3-binary
 psycopg2-binary
 datetime
-sqlalchemy
-
 pyodbc
