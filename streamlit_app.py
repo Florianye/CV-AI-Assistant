@@ -52,7 +52,11 @@ if st.session_state.messages[-1]["role"] != "assistant":
 # Save chat_history_row as row in azure database
 try:
     if len(chat_history_row) > 2:
-        conn = conn_database(server_name=None, database=None, db_username=None, db_password=None)
+        conn = conn_database(server_name=st.secrets["OPENAI_API_KEY"], 
+                             database=st.secrets["DATABASE"], 
+                             db_username=st.secrets["DB_USERNAME"], 
+                             db_password=st.secrets["DB_PASSWORD"],
+                             streamlit=True)
         cursor = conn.cursor()
         cursor.execute(f"INSERT INTO chat_history (datetime, question, answer) VALUES ('{chat_history_row[0]}', '{chat_history_row[1]}', '{chat_history_row[2]}');")
         conn.commit()
