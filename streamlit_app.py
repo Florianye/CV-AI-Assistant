@@ -50,15 +50,16 @@ if st.session_state.messages[-1]["role"] != "assistant":
     message = {"role": "assistant", "content": response}
     st.session_state.messages.append(message)
 
-# Save chat_history_row as row in gs
-#try:
-chat_history_row = pd.DataFrame([chat_history_row])
-if chat_history_row.iloc[0].count() > 2:
-    gs_conn = init_gs_conn()
-    data = gs_conn.read(worksheet="chat-history", usecols=[0, 1, 2]).dropna() # Daten werden immer pberschrieben und es fängt bei 0 Rows an
-    st.write(data)
-    data = pd.concat([data, chat_history_row])
-    st.write(data)
-    gs_conn.update(worksheet="chat-history", data=data)
-#except:
-#    st.write("Error")
+    # Save chat_history_row as row in gs
+    try:
+        chat_history_row = pd.DataFrame([chat_history_row])
+        if chat_history_row.iloc[0].count() > 2:
+            gs_conn = init_gs_conn()
+            data = gs_conn.read(worksheet="chat-history", usecols=[0, 1, 2], ttl=0).dropna()
+            data = pd.concat([data, chat_history_row])
+            gs_conn.update(worksheet="chat-history", data=data)
+    except:
+        pass
+
+
+

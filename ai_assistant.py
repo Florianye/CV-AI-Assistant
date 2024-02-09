@@ -27,7 +27,7 @@ def initialize_bot(OPENAI_API_KEY=None):
     doc = loader.load()
 
     # Select the GPT model and initialize the tokenizer for that model.
-    gpt_model = "gpt-3.5-turbo-1106"
+    gpt_model = "gpt-3.5-turbo-0125" #"gpt-3.5-turbo-1106"
     tokenizer_name = tiktoken.encoding_for_model(gpt_model)
     tokenizer = tiktoken.get_encoding(tokenizer_name.name)
 
@@ -45,7 +45,7 @@ def initialize_bot(OPENAI_API_KEY=None):
     data = text_splitter.split_documents(doc)
 
     # Create embeddings for the document chunks.
-    embeddings = OpenAIEmbeddings(openai_api_key=os.environ["OPENAI_API_KEY"])
+    embeddings = OpenAIEmbeddings(openai_api_key=os.environ["OPENAI_API_KEY"])#, model="text-embedding-3-small")
 
     # Create a Chroma store from the document chunks and embeddings.
     store = Chroma.from_documents(
