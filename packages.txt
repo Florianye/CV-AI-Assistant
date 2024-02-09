@@ -1,1 +1,1 @@
-sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+ACCEPT_EULA=Y apt-get install -y msodbcsql18
