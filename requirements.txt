@@ -8,4 +8,5 @@ pypdf
 pysqlite3-binary
 psycopg2-binary
 datetime
-pyodbc
+st-gsheets-connection
+pandas

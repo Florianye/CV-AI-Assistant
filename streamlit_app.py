@@ -1,8 +1,9 @@
 # Main execution block for Streamlit app
 import streamlit as st
 from ai_assistant import initialize_bot, interact_with_bot
-from azure_database import conn_database
+from gs_db import init_gs_conn
 from datetime import datetime
+import pandas as pd
 
 st.title("Florian Ye's AI Assistant")
 #qa_with_source = initialize_bot()
@@ -23,7 +24,7 @@ st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
 st.sidebar.write("""Please frame your questions clearly since my assistant starts fresh with every interaction and doesn't recall past exchanges. 
                  A bit more detail can go a long way in helping us help you. Thanks for your understanding and happy chatting!""")
 
-chat_history_row = []
+chat_history_row = {}
 
 # User-provided prompt
 prompt = st.chat_input()
@@ -34,8 +35,8 @@ if prompt:
 
         # Save date, questions and answers to defined empty list
         datetime_now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        chat_history_row.append(datetime_now)
-        chat_history_row.append(prompt.replace("'", ""))
+        chat_history_row["datetime"] = datetime_now
+        chat_history_row["question"] = prompt.replace("'", "")
 
 #st.write(st.session_state.messages)
 
@@ -45,23 +46,19 @@ if st.session_state.messages[-1]["role"] != "assistant":
         with st.spinner("Thinking..."):
             response = interact_with_bot(prompt)
             st.write(response)
-            chat_history_row.append(response.replace("'", ""))
+            chat_history_row["answer"] = response.replace("'", "")
     message = {"role": "assistant", "content": response}
     st.session_state.messages.append(message)
 
-# Save chat_history_row as row in azure database
+# Save chat_history_row as row in gs
 #try:
-if len(chat_history_row) > 2:
-    conn = conn_database(server_name=st.secrets["SERVER_NAME"], 
-                            database=st.secrets["DATABASE"], 
-                            db_username=st.secrets["DB_USERNAME"], 
-                            db_password=st.secrets["DB_PASSWORD"],
-                            streamlit=True)
-    cursor = conn.cursor()
-    #st.write(f"'{chat_history_row[0]}', '{chat_history_row[1]}', '{chat_history_row[2]}'")
-    cursor.execute(f"INSERT INTO chat_history (datetime, question, answer) VALUES ('{chat_history_row[0]}', '{chat_history_row[1]}', '{chat_history_row[2]}');")
-    
-    conn.commit()
-        #conn.close()
+chat_history_row = pd.DataFrame([chat_history_row])
+if chat_history_row.iloc[0].count() > 2:
+    gs_conn = init_gs_conn()
+    data = gs_conn.read(worksheet="chat-history", usecols=[0, 1, 2]).dropna() # Daten werden immer pberschrieben und es fängt bei 0 Rows an
+    st.write(data)
+    data = pd.concat([data, chat_history_row])
+    st.write(data)
+    gs_conn.update(worksheet="chat-history", data=data)
 #except:
 #    st.write("Error")
