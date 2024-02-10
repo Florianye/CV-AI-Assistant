@@ -52,6 +52,7 @@ if st.session_state.messages[-1]["role"] != "assistant":
 
     # Save chat_history_row as row in gs
     try:
+        logging.getLogger().setLevel(logging.ERROR) # Hide Running function message
         chat_history_row = pd.DataFrame([chat_history_row])
         if chat_history_row.iloc[0].count() > 2:
             gs_conn = init_gs_conn()
