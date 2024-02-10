@@ -4,6 +4,7 @@ from ai_assistant import initialize_bot, interact_with_bot
 from gs_db import init_gs_conn
 from datetime import datetime
 import pandas as pd
+import logging
 
 st.title("Florian Ye's AI Assistant")
 #qa_with_source = initialize_bot()
