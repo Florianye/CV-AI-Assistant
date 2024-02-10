@@ -3,13 +3,11 @@ import streamlit as st
 from ai_assistant import initialize_bot, interact_with_bot
 from gs_db import init_gs_conn, update_gs
 from datetime import datetime
-import pandas as pd
-import logging
 
-st.title("Florian Ye's AI Assistant")
+st.header("Florian Ye")
 
 # Store LLM generated responses
-start_message = "Hi, I'm happy to answer any questions you may have about Florian's professional and educational background!"
+start_message = "Hi, my name is Proficia. I am Florian's AI Assistant and happy to answer any questions you may have about his professional and educational background!"
 if "messages" not in st.session_state.keys():
     st.session_state.messages = [{"role": "assistant", "content": start_message}]
 
