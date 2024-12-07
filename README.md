@@ -16,7 +16,7 @@ Proficia is not just any chatbot; it's a sophisticated AI assistant tailored to 
 
 To interact with Proficia and discover more about Florian Ye's educational and professional background, visit the AI assistant at the following URL:
 
-[https://fye-proficia.streamlit.app/](https://fye-proficia.streamlit.app/)
+[https://florian-ye.streamlit.app/](https://florian-ye.streamlit.app/)
 
 ## Feedback and Inquiries
 
